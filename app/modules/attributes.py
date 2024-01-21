@@ -23,6 +23,15 @@ class Attribute:
             raise ValueError(f"Invalid initalization {self.__class__.__name__.lower()}")
         self.val = val
 
+    def __repr__(self):
+        return self.val
+    
+    def __str__(self):
+        return self.val
+    
+    def get_val(self):
+        return self.val
+
 # Subclasses
 class Direction(Attribute):
     def __init__(self, dir: str):

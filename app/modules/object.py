@@ -23,5 +23,5 @@ class Object:
             self.type(element)
         except:
             return False
-        self.element = element
+        self.element = self.type(element)
         return True

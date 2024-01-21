@@ -15,10 +15,14 @@ def cycle_input(version: str):
         print(f"GET: {cmd.get_property(data, 1)}")
     elif check_all(data[0], ['i', 'info']):
         print(f"INFO: {cmd.get_info(data, 1)}")
+    elif check_all(data[0], ['m', 'map']):
+        print(cmd.print_map())
     elif check_all(data[0], ['c', 'clear']):
         cmd.clear_terminal()
     elif check_all(data[0], ['e', 'exit', 'd', 'done']):
         return False
+    elif check_all(data[0], ['r', 'run']):
+        cmd.run_trade()
     else: 
         print("Invalid input")
 
