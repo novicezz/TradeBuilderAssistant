@@ -1,19 +1,21 @@
 # External imports
 from math import ceil, floor
-from modules.calculations import *
 # Local imports
-from modules.memory import MemoryManager
-from modules.utils  import fill_table, check_if_full
-from modules.attributes import *
+from modules.calculations import *
+from modules.utils  import get_primitives, check_if_full
 
+# Constants TODO: Get from config
 HUNDREDTH = 2
 LIQUIDITY_FRACTION = 0.5
-DAYORHOUR_SLBUFFER = 0.1
+
 FIFTEEN_SLBUFFER = 0.02
-FIFTEENORHOUR_ENTRYBUFFER = 0.02
+HOUR_SLBUFFER = 0.1
+DAY_SLBUFFER = 0.1
+
+FIFTEEN_ENTRYBUFFER = 0.02
+HOUR_ENTRYBUFFER = 0.02
 DAY_ENTRYBUFFER = 0.04
 
-# Tradebuilder mechanisms
 def long_position(setupTable: dict) -> str:
 # Convert to Common Calculation
     dzSize = setupTable["dzone"]["proximal"] - setupTable["dzone"]["distal"]
@@ -39,17 +41,21 @@ def long_position(setupTable: dict) -> str:
     else:
         return "Error: Activation rule cannot be generated with given SZ values, please double check and try again"
 # Limit/stop price calculation   
-    if setupTable["timeframe"].get_val() == "15" or setupTable["timeframe"].get_val() == "hour":
-        limitBuffer = FIFTEENORHOUR_ENTRYBUFFER
-    elif setupTable["timeframe"].get_val() == "day":
+    if setupTable["timeframe"] == "15":
+        limitBuffer = FIFTEEN_ENTRYBUFFER
+    elif setupTable["timeframe"]== "hour":
+        limitBuffer = HOUR_ENTRYBUFFER
+    elif setupTable["timeframe"] == "day":
         limitBuffer = DAY_ENTRYBUFFER
     limitPrice = roundreg(setupTable["entry"] + limitBuffer, HUNDREDTH)
     stopPrice = setupTable["entry"]
 # Stop loss calculation
-    if setupTable["timeframe"].get_val() == "hour" or setupTable["timeframe"].get_val() == "day": 
-        stopLossBuffer = DAYORHOUR_SLBUFFER
-    elif setupTable["timeframe"].get_val() == "15":
+    if setupTable["timeframe"] == "15":
         stopLossBuffer = FIFTEEN_SLBUFFER
+    elif setupTable["timeframe"] == "hour": 
+        stopLossBuffer = HOUR_SLBUFFER
+    elif setupTable["timeframe"] == "day":
+        stopLossBuffer = DAY_SLBUFFER
     stopLoss = setupTable["dzone"]["distal"] - (setupTable["atr"] * stopLossBuffer)
 # Position size calculator
     riskPerShare = abs(setupTable["entry"] - stopLoss)
@@ -66,7 +72,7 @@ def long_position(setupTable: dict) -> str:
     targetOneShares = ceil(0.8 * positionSize)
     targetTwo = setupTable["szone"]["proximal"]
     targetTwoShares = positionSize - targetOneShares
-# Print position
+# Assemble report
     report  = f"Ticker:             {setupTable['ticker']}\n"
     report += f"Position cost:      {positionCost}\n"
     report += f"Position size:      {positionSize}\n"
@@ -77,10 +83,10 @@ def long_position(setupTable: dict) -> str:
     report += f"Target 1:           {targetOne}\n"
     report += f"Target 2:           {targetTwo}\n"
     report += f"Target 1 split:     {targetOneShares}\n"
-    report += f"Target 2 split:     {targetTwoShares}\n"
+    report += f"Target 2 split:     {targetTwoShares}"
     return report
 
-def short_position(setupTable: dict):
+def short_position(setupTable: dict) -> str:
     # Convert to Common Calculation
     szSize = setupTable["szone"]["distal"] - setupTable["szone"]["proximal"]
 # Error conditions
@@ -105,17 +111,21 @@ def short_position(setupTable: dict):
     else:
         return "Error: Activation rule cannot be generated with given SZ values, please double check and try again"
 # Limit/stop price calculation
-    if setupTable["timeframe"].get_val() == "15" or setupTable["timeframe"].get_val() == "hour":
-        limitBuffer = FIFTEENORHOUR_ENTRYBUFFER
-    elif setupTable["timeframe"].get_val() == "day":
+    if setupTable["timeframe"] == "15":
+        limitBuffer = FIFTEEN_ENTRYBUFFER
+    elif setupTable["timeframe"] == "hour":
+        limitBuffer = HOUR_ENTRYBUFFER
+    elif setupTable["timeframe"] == "day":
         limitBuffer = DAY_ENTRYBUFFER
     limitPrice = roundreg(setupTable["entry"] - limitBuffer, HUNDREDTH)
     stopPrice = setupTable["entry"]
 # Stop loss calculation
-    if setupTable["timeframe"].get_val() == "hour" or setupTable["timeframe"].get_val() == "day": 
-        stopLossBuffer = DAYORHOUR_SLBUFFER
-    elif setupTable["timeframe"].get_val() == "15":
+    if setupTable["timeframe"] == "15":
         stopLossBuffer = FIFTEEN_SLBUFFER
+    elif setupTable["timeframe"] == "hour": 
+        stopLossBuffer = HOUR_SLBUFFER
+    elif setupTable["timeframe"] == "day":
+        stopLossBuffer = DAY_SLBUFFER
     stopLoss = setupTable["szone"]["distal"] + (setupTable["atr"] * stopLossBuffer)
 # Position size calculator
     riskPerShare = abs(stopLoss - setupTable["entry"])
@@ -143,16 +153,16 @@ def short_position(setupTable: dict):
     report += f"Target 1:           {targetOne}\n"
     report += f"Target 2:           {targetTwo}\n"
     report += f"Target 1 split:     {targetOneShares}\n"
-    report += f"Target 2 split:     {targetTwoShares}\n"
+    report += f"Target 2 split:     {targetTwoShares}"
     return report
 
-def generate_position():
-    setupTable = fill_table(MemoryManager.get_set())
+def generate_position(positionData: dict) -> str:
+    setupTable = get_primitives(positionData)
     if not check_if_full(setupTable):
-        print("Please fill out setup table")
-    elif setupTable["direction"].get_val() == "long":
-        print(long_position(setupTable))
-    elif setupTable["direction"].get_val() == "short":
-        print(short_position(setupTable))
+        return "ERROR: Please fill out your setup properties"
+    elif setupTable["direction"] == "long":
+        return long_position(setupTable)
+    elif setupTable["direction"] == "short":
+        return short_position(setupTable)
     else:
-        print("No direction specified, please set direction and try again")
+        return "ERROR: No direction specified, please set direction and try again"

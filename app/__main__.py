@@ -2,7 +2,7 @@
 import modules.input_handler as handler
 
 # Constants
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 LOGIN_MSG = "NOTE: ALL SETUPS ARE PROCESSED AS STOP-LIMIT ENTRIES; LIMIT ENTRIES AND CORRESPONDING TRADE CRITERIA WILL BE ADDED IN FUTURE UPDATE."
 USAGE_MSG = "Enter a command (or type 'help' for more information)"

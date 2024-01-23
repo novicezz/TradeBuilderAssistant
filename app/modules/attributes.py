@@ -1,20 +1,7 @@
 # Constants
-DIRECTIONS = [
-    "long",
-    "short"
-]
-
-TIME_FRAMES = [
-    "15",
-    "hour",
-    "day"
-]
-
-TREND_TYPES = [
-    "up",
-    "sideways",
-    "down"
-]
+DIRECTIONS = [ "long", "short" ]
+TIME_FRAMES = [ "15", "hour", "day" ]
+TREND_TYPES = [ "up", "sideways", "down" ]
 
 # Parent class
 class Attribute:
@@ -27,10 +14,7 @@ class Attribute:
         return self.val
     
     def __str__(self):
-        return self.val
-    
-    def get_val(self):
-        return self.val
+        return str(self.val)
 
 # Subclasses
 class Direction(Attribute):
@@ -44,3 +28,7 @@ class TimeFrame(Attribute):
 class Trend(Attribute):
     def __init__(self, trend: str):
         super().__init__(trend, TREND_TYPES)
+
+class Ticker(Attribute):
+    def __init__(self, ticker: str):
+        self.val = ticker.upper()
