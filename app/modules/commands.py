@@ -65,29 +65,32 @@ def get_info(data: list, offset: int):
         if data[offset] == cmpr:
             return i
 
+    saveName = get_name(data, offset, len(data) - 1)
     sets = MemoryManager.show_sets()
-    if data[offset] in sets:
-        return f"{MemoryManager.get_set(data[offset])['ticker']}/{MemoryManager.get_set(data[offset])['direction']}"
-    return f"{property}, Command not found: {data[offset]}, Saved setup not found: {data[offset]}"
+    if saveName in sets:
+        return f"Trade setup | {saveName} - {MemoryManager.get_set(saveName)['ticker']}/{MemoryManager.get_set(saveName)['direction']}"
+    return f"{property}, Command not found: {data[offset]}, Saved setup not found: {saveName}"
 
 def print_map(data: list, offset: str) -> str:
     if len(data) <= offset or data[offset] == "": 
         return f"Map of current trade\n{gen_map(MemoryManager.get_active())}"
-
+    
+    saveName = get_name(data, offset, len(data) - 1)
     sets = MemoryManager.show_sets()
-    if data[offset] in sets:
-        return f"Map of {data[offset]}\n{gen_map(MemoryManager.get_set(data[offset]))}"
-    return f"Saved setup not found {data[offset]}"
+    if saveName in sets:
+        return f"Map of {saveName}\n{gen_map(MemoryManager.get_set(saveName))}"
+    return f"Saved setup not found {saveName}"
 
 def run_trade(data: list, offset: int) -> str:
     if len(data) <= offset or data[offset] == "":
         return generate_position(MemoryManager.get_active())
 
+    saveName = get_name(data, offset, len(data) - 1)
     sets = MemoryManager.show_sets()
-    if data[offset] in sets:
-        return generate_position(MemoryManager.get_set(data[offset]))
+    if saveName in sets:
+        return generate_position(MemoryManager.get_set(saveName))
     else:
-        return f"Saved setup not found {data[offset]}"
+        return f"Saved setup not found {saveName}"
 
 def clear_terminal():
     os.system('cls' if platform.system() == 'Windows' else 'clear')
@@ -127,29 +130,31 @@ def save_session(data: list, offset: int) -> str:
     if len(data) <= offset or data[offset] == "": 
         return "Operation failed, no save name specified"
 
-    # Multi-word saves?
-    if MemoryManager.save_set(data[offset]):
-        return f"Successfully saved current setup to memory as {data[offset]}"
+    saveName = get_name(data, offset, len(data) - 1)
+    if MemoryManager.save_set(saveName):
+        return f"Successfully saved current setup to memory as {saveName}"
 
-    if check_all(input(f"Saved trade setup {data[offset]} already exists. Would you like to overwrite (Y/N)? ").lower(), ['y', 'yes']):
-        MemoryManager.overwrite_set(data[offset])
-        return f"Successfully overwrote existing trade: {data[offset]}, and saved the current setup to memory"
-    return f"Operation failed, {data[offset]} already exists"
+    if check_all(input(f"Saved trade setup {saveName} already exists. Would you like to overwrite (Y/N)? ").lower(), ['y', 'yes']):
+        MemoryManager.overwrite_set(saveName)
+        return f"Successfully overwrote existing trade: {saveName}, and saved the current setup to memory"
+    return f"Operation failed, {saveName} already exists"
 
 def load_session(data: list, offset: int) -> str:
     if len(data) <= offset or data[offset] == "":
         return "Operation failed, no save name specified"
 
-    if MemoryManager.load_set(data[offset]):
-        return f"Successfully loaded {data[offset]} from memory"
+    saveName = get_name(data, offset, len(data) - 1)
+    if MemoryManager.load_set(saveName):
+        return f"Successfully loaded {saveName} from memory"
     else:
-        return f"Operation failed, {data[offset]} does not exist"
+        return f"Operation failed, {saveName} does not exist"
     
 def delete_session(data: list, offset: int) -> str:
     if len(data) <= offset or data[offset] == "":
         return "Operation failed, no save name specified"
 
-    if MemoryManager.remove_set(data[offset]):
-        return f"Successfully deleted {data[offset]} from memory"
+    saveName = get_name(data, offset, len(data) - 1)
+    if MemoryManager.remove_set(saveName):
+        return f"Successfully deleted {saveName} from memory"
     else:
-        return f"Operation failed, {data[offset]} does not exist"
+        return f"Operation failed, {saveName} does not exist"

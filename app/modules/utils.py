@@ -19,11 +19,11 @@ def enum_dict(keys: list, target: dict, offset: int = 0):
             return enum_dict(keys, target[keys[offset]], offset + 1)
     return None, f"Property not found: {keys[offset]}"
 
-def get_name(data: list, offset: int, property: int) -> str:
-    name = ''
-    for i in range(offset, property + 1):
+def get_name(data: list, start: int, end: int) -> str:
+    name = ""
+    for i in range(start, end + 1):
         name += data[i]
-        if i != property: name += ' '
+        if i != end: name += ' '
     return name
 
 def gen_map(target: dict, level: int = 0, last: bool = False) -> str:
