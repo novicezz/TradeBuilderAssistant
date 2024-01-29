@@ -4,7 +4,7 @@ from math import ceil, floor
 from modules.calculations import *
 from modules.utils  import get_primitives, check_if_full
 
-# Constants TODO: Get from config
+# Constants
 HUNDREDTH = 2
 LIQUIDITY_FRACTION = 0.5
 
@@ -15,6 +15,15 @@ DAY_SLBUFFER = 0.1
 FIFTEEN_ENTRYBUFFER = 0.02
 HOUR_ENTRYBUFFER = 0.02
 DAY_ENTRYBUFFER = 0.04
+
+TARGETONE_BUFFER = 0.8
+
+ZONEDENOMIATOR_FIFTH = 5
+ZONEDENOMIATOR_QUARTER = 4
+ZONEDENOMIATOR_THIRD = 3
+
+ZONESIZE_FIFTYCENTS = 0.5
+ZONESIZE_DOLLAR = 1.0
 
 def long_position(setupTable: dict) -> str:
 # Convert to Common Calculation
@@ -28,12 +37,12 @@ def long_position(setupTable: dict) -> str:
         return "Error: Value of SZ proximal cannot be equal to or lower than value of DZ proximal"
 # Activation rule calculation
     activationRule = None
-    if dzSize <= 0.5:
-        activationPrice = setupTable["entry"] - (dzSize / 5)
-    elif 0.5 < dzSize <= 1.0:
-        activationPrice = setupTable["entry"] - (dzSize / 4)
-    elif dzSize > 1.0:
-        activationPrice = setupTable["entry"] - (dzSize / 3)
+    if dzSize <= ZONESIZE_FIFTYCENTS:
+        activationPrice = setupTable["entry"] - (dzSize / ZONEDENOMIATOR_FIFTH)
+    elif ZONESIZE_FIFTYCENTS < dzSize <= ZONESIZE_DOLLAR:
+        activationPrice = setupTable["entry"] - (dzSize / ZONEDENOMIATOR_QUARTER)
+    elif dzSize > ZONESIZE_DOLLAR:
+        activationPrice = setupTable["entry"] - (dzSize / ZONEDENOMIATOR_THIRD)
     else:
         return "Error with activation rule input, please double check and try again"
     if activationPrice is not None:
@@ -69,7 +78,7 @@ def long_position(setupTable: dict) -> str:
     tradeRisk = roundreg(positionSize * riskPerShare, HUNDREDTH)
 # Target Calculator
     targetOne = setupTable["entry"] + rounddown(0.8 * abs(setupTable["szone"]["proximal"] - setupTable["entry"]), HUNDREDTH)
-    targetOneShares = ceil(0.8 * positionSize)
+    targetOneShares = ceil(TARGETONE_BUFFER * positionSize)
     targetTwo = setupTable["szone"]["proximal"]
     targetTwoShares = positionSize - targetOneShares
 # Assemble report
@@ -98,12 +107,12 @@ def short_position(setupTable: dict) -> str:
         return "Error: Value of SZ proximal cannot be equal to or lower than value of DZ proximal"
 # Activation rule calculation
     activationRule = None
-    if szSize <= 0.5:
-        activationPrice = setupTable["entry"] + (szSize / 5)
-    elif 0.5 < szSize <= 1.0:
-        activationPrice = setupTable["entry"] + (szSize / 4)
-    elif szSize > 1.0:
-        activationPrice = setupTable["entry"] + (szSize / 3)
+    if szSize <= ZONESIZE_FIFTYCENTS:
+        activationPrice = setupTable["entry"] + (szSize / ZONEDENOMIATOR_FIFTH)
+    elif ZONESIZE_FIFTYCENTS < szSize <= ZONESIZE_DOLLAR:
+        activationPrice = setupTable["entry"] + (szSize / ZONEDENOMIATOR_QUARTER)
+    elif szSize > ZONESIZE_DOLLAR:
+        activationPrice = setupTable["entry"] + (szSize / ZONEDENOMIATOR_THIRD)
     else:
         return "Error with activation rule input, please double check and try again"
     if activationPrice is not None:
@@ -139,7 +148,7 @@ def short_position(setupTable: dict) -> str:
     tradeRisk = roundreg(positionSize * riskPerShare, HUNDREDTH)
 # Target Calculator
     targetOne = setupTable["entry"] - roundup(0.8 * abs(setupTable["entry"] - setupTable["dzone"]["proximal"]), HUNDREDTH)
-    targetOneShares = ceil(0.8 * positionSize)
+    targetOneShares = ceil(TARGETONE_BUFFER * positionSize)
     targetTwo = setupTable["dzone"]["proximal"]
     targetTwoShares = positionSize - targetOneShares
 # Print position 

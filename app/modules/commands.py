@@ -158,3 +158,29 @@ def delete_session(data: list, offset: int) -> str:
         return f"Successfully deleted {saveName} from memory"
     else:
         return f"Operation failed, {saveName} does not exist"
+
+def pull_file(data: list, offset: int) -> str:
+    if len(data) <= offset or data[offset] == "":
+        return "Operation failed, no save name specified"
+
+    saveName = get_name(data, offset, len(data) - 1)
+    savePath = "./firstSave"
+    if MemoryManager.import_set(saveName, savePath):
+        return f"Successfully imported {saveName} from storage, to memory"
+    else:
+        return f"Operation failed, could not import {saveName} from storage"
+
+def output_file(data: list, offset: int) -> str:
+    if len(data) <= offset or data[offset] == "":
+        return "Operation failed, no save name specified"
+
+    saveName = get_name(data, offset, len(data) - 1)
+    saveDict = MemoryManager.get_set(saveName)
+    if saveDict == None:
+        return f"Operation failed, {saveName} does not exist"
+
+    savePath = "./firstSave"
+    if MemoryManager.export_set(saveDict, savePath):
+        return f"Successfully exported {saveName} from memory, to storage"
+    else:
+        return f"Operation failed, could not export {saveName}"

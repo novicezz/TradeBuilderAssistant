@@ -31,6 +31,10 @@ def cycle_input(version: str):
         print(f"LOAD: {cmd.load_session(data, 1)}")
     elif check_all(data[0], ['d', 'delete']):
         print(f"DELETE: {cmd.delete_session(data, 1)}")
+    elif check_all(data[0], ['p', 'pull']):
+        print(f"PULL: {cmd.pull_file(data, 1)}")
+    elif check_all(data[0], ['o', 'output']):
+        print(f"OUTPUT: {cmd.output_file(data, 1)}")
     elif check_all(data[0], ['e', 'exit']):
         return False
     else: 

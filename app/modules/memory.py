@@ -75,9 +75,9 @@ class MemoryManager:
         return list(cls.setDict.keys())
 
     @classmethod
-    def import_set(cls, path: str):
-        pass
+    def import_set(cls, path: str) -> bool:
+        return False
     
-    @classmethod
-    def export_set(cls, path: str):
-        pass
+    @staticmethod
+    def export_set(target: dict, path: str) -> bool:
+        return False
