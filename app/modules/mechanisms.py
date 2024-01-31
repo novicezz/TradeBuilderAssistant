@@ -41,23 +41,23 @@ def long_position(setupTable: dict, configSettings: dict) -> str:
 # Target Calculator
     targets = []
     targetShares = []
-    for i in range(0, len(configSettings["TARGET_BUFFERS"])):
+    for i in configSettings["TARGETS"]:
         distance = abs(setupTable["szone"]["proximal"] - setupTable["entry"])
-        targets.append(roundreg(setupTable["entry"] + rounddown(configSettings["TARGET_BUFFERS"][i] * distance, HUNDREDTH), HUNDREDTH))
-        targetShares.append(round(configSettings["TARGET_SPLIT"][i] * positionSize))
+        targets.append(rounddown(setupTable["entry"] + i * distance, HUNDREDTH))
+        targetShares.append(round(configSettings["TARGETS"][i] * positionSize))
 # Assemble report
     report  = f"Ticker:             {setupTable['ticker']}\n"
-    report += f"Position cost:      ${positionCost}\n"
+    report += f"Position cost:      ${positionCost:.2f}\n"
     report += f"Position size:      {positionSize}\n"
-    report += f"Position risk:      ${tradeRisk}\n"
-    report += f"Limit price:        ${limitPrice}\n"
-    report += f"Stop price:         ${stopPrice}\n"
-    report += f"Activation price:   ${activationRule}\n"
-    report += f"Stop Loss:          ${stopLoss}\n"
+    report += f"Position risk:      ${tradeRisk:.2f}\n"
+    report += f"Limit price:        ${limitPrice:.2f}\n"
+    report += f"Stop price:         ${stopPrice:.2f}\n"
+    report += f"Activation price:   ${activationRule:.2f}\n"
+    report += f"Stop loss:          ${stopLoss:.2f}\n\n"
     for i in range(0, len(targets)):
-        report += f"Target {i + 1}: ${targets[i]}\n"
+        report += f"Target {i + 1}:           ${targets[i]:.2f}\n"
     for i in range(0, len(targetShares)):
-        report += f"Target {i + 1} split: {targetShares[i]}"
+        report += f"Target {i + 1} split:     {targetShares[i]}"
         if i != len(targetShares) - 1: report += '\n'
     return report
 
@@ -94,23 +94,23 @@ def short_position(setupTable: dict, configSettings: dict) -> str:
 # Target Calculator
     targets = []
     targetShares = []
-    for i in range(0, len(configSettings["TARGET_BUFFERS"])):
+    for i in configSettings["TARGETS"]:
         distance = abs(setupTable["entry"] - setupTable["dzone"]["proximal"])
-        targets.append(roundreg(setupTable["entry"] - roundup(configSettings["TARGET_BUFFERS"][i] * distance, HUNDREDTH), HUNDREDTH))
-        targetShares.append(round(configSettings["TARGET_SPLIT"][i] * positionSize))
+        targets.append(roundup(setupTable["entry"] - i * distance, HUNDREDTH))
+        targetShares.append(round(configSettings["TARGETS"][i] * positionSize))
 # Print position 
     report  = f"Ticker:             {setupTable['ticker']}\n"
-    report += f"Position cost:      ${positionCost}\n"
+    report += f"Position cost:      ${positionCost:.2f}\n"
     report += f"Position size:      {positionSize}\n"
-    report += f"Position risk:      ${tradeRisk}\n"
-    report += f"Limit price:        ${limitPrice}\n"
-    report += f"Stop price:         ${stopPrice}\n"
-    report += f"Activation price:   ${activationRule}\n"
-    report += f"Stop Loss:          ${stopLoss}\n"
+    report += f"Position risk:      ${tradeRisk:.2f}\n"
+    report += f"Limit price:        ${limitPrice:.2f}\n"
+    report += f"Stop price:         ${stopPrice:.2f}\n"
+    report += f"Activation price:   ${activationRule:.2f}\n"
+    report += f"Stop loss:          ${stopLoss:.2f}\n\n"
     for i in range(0, len(targets)):
-        report += f"Target {i + 1}: ${targets[i]}\n"
+        report += f"Target {i + 1}:           ${targets[i]:.2f}\n"
     for i in range(0, len(targetShares)):
-        report += f"Target {i + 1} split: {targetShares[i]}"
+        report += f"Target {i + 1} split:     {targetShares[i]}"
         if i != len(targetShares) - 1: report += '\n'
     return report
 

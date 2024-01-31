@@ -21,8 +21,7 @@ class ZoneSpec:
 
 DEFAULT_CONFIG = {
     "LIQUIDITY_FRACTION": 0.50,
-    "TARGET_BUFFERS":  [ 0.80, 1.00 ],
-    "TARGET_SPLIT": [ 0.80, 0.20 ],
+    "TARGETS":  { 0.80: 0.80, 1.00: 0.20 },
     "ZONE_SPEC": ZoneSpec(5, { 0.5: 4, 1.0: 3 }),
     "15":   { "ENTRY_BUFFER":  0.02, "SL_BUFFER": 0.02 },
     "hour": { "ENTRY_BUFFER":  0.02, "SL_BUFFER": 0.10 },
