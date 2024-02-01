@@ -161,26 +161,22 @@ def delete_session(data: list, offset: int) -> str:
 
 def pull_file(data: list, offset: int) -> str:
     if len(data) <= offset or data[offset] == "":
-        return "Operation failed, no save name specified"
+        return "Operation failed, path specified"
 
-    saveName = get_name(data, offset, len(data) - 1)
-    savePath = "./firstSave"
-    if MemoryManager.import_set(saveName, savePath):
-        return f"Successfully imported {saveName} from storage, to memory"
+    savePath = get_name(data, offset, len(data) - 1) + ".sve"
+    status = MemoryManager.import_set(savePath)
+    if status == True:
+        return f"Successfully loaded {savePath} from storage, to memory"
     else:
-        return f"Operation failed, could not import {saveName} from storage"
+        return f"Operation failed, could not pull {savePath}: {status}"
 
 def output_file(data: list, offset: int) -> str:
     if len(data) <= offset or data[offset] == "":
-        return "Operation failed, no save name specified"
+        return "Operation failed, no path specified"
 
-    saveName = get_name(data, offset, len(data) - 1)
-    saveDict = MemoryManager.get_set(saveName)
-    if saveDict == None:
-        return f"Operation failed, {saveName} does not exist"
-
-    savePath = "./firstSave"
-    if MemoryManager.export_set(saveDict, savePath):
-        return f"Successfully exported {saveName} from memory, to storage"
+    savePath = get_name(data, offset, len(data) - 1) + ".sve"
+    status = MemoryManager.export_set(MemoryManager.get_active(), savePath)
+    if status == True:
+        return f"Successfully exported current save from memory, to {savePath}"
     else:
-        return f"Operation failed, could not export {saveName}"
+        return f"Operation failed, could not export save to {savePath}: {status}"

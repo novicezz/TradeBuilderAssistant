@@ -19,7 +19,7 @@ def stop_buff(zones: int, dailyATR: float):
 
     stopLossBuffer = roundup(dailyATR, 2)
 
-#maximumRiskAmount = accountSize * 0.02; % The 2% Rule is kind of shit
+#maximumRiskAmount = accountSize * 0.02; % 
 # maximumRiskAmount = 120;
 # maximumPositionSize = floor(maximumRiskAmount / tradeRisk)
 

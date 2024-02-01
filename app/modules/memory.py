@@ -1,7 +1,8 @@
 # External imports
 from copy                   import deepcopy
+import pickle
 # Internal imports
-from modules.container  import Container
+from modules.container      import Container
 from modules.attributes     import *
 
 EMPTY_PROPERTIES = {
@@ -76,8 +77,18 @@ class MemoryManager:
 
     @classmethod
     def import_set(cls, path: str) -> bool:
-        return False
+        try:
+            with open(path, 'rb') as f:
+                cls.activeSet = pickle.load(f)
+        except Exception as e:
+            return str(e)
+        return True
     
     @staticmethod
-    def export_set(target: dict, path: str) -> bool:
-        return False
+    def export_set(target: dict, path: str):
+        try:
+            with open(path, 'wb') as f:
+                pickle.dump(target, f)
+        except Exception as e:
+            return str(e)
+        return True

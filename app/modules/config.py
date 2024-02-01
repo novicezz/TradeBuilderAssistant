@@ -28,7 +28,6 @@ DEFAULT_CONFIG = {
     "day":  { "ENTRY_BUFFER":  0.04, "SL_BUFFER": 0.10 }
 }
 
-
 class ConfigHandler:
 
     @classmethod
