@@ -1,3 +1,7 @@
+# External imports
+from copy   import deepcopy
+import json
+
 class ZoneSpec:
     def __init__(self, lowest: float, zoneSet: dict | None):
         self.lowestFract = lowest
@@ -29,7 +33,36 @@ DEFAULT_CONFIG = {
 }
 
 class ConfigHandler:
+    currentConfig: dict = deepcopy(DEFAULT_CONFIG)
+    @classmethod
+    def fetch(cls, path: str) -> bool | str:
+        try:
+            with open(path) as f:
+                data = json.load(f)
+        except Exception as e:
+            return False, e
+        if(type(data) != dict):
+            return False, "Improper configuration formatting"
+        return True, cls.loadtocurrent(data)
 
     @classmethod
-    def fetch(cls, path: str) -> str:
-        return ""
+    def loadtocurrent(cls, data: dict) -> str:
+        dataKeys = list(data.keys())
+        configKeys = cls.converttostr(list(cls.currentConfig.keys()))
+
+
+        changed = ""
+        for i in dataKeys:
+            if i in configKeys:
+                changed += f"{i} was changed\n"
+        return changed
+                
+    @classmethod
+    def reset(cls):
+        cls.currentConfig = deepcopy(DEFAULT_CONFIG)
+
+    @staticmethod
+    def converttostr(data: list) -> list:
+        for i in range(0, len(data)):
+            data[i] = str(data[i])
+        return data

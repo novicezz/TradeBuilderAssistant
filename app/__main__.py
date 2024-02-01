@@ -1,5 +1,6 @@
 # Local imports
 import modules.input_handler as handler
+from modules.config          import ConfigHandler
 
 # Constants
 VERSION = "0.9.1"
@@ -10,8 +11,13 @@ EXIT_MSG = "Thank you for using the Trade Builder"
 
 # Main func
 def main():
-    print(LOGIN_MSG + "\n\n" + USAGE_MSG)
+    print(LOGIN_MSG + "\n" + USAGE_MSG)
 
+    # changed, result = ConfigHandler.fetch("app/builder.conf")
+    # if changed:
+    #     print(f"\nConfig loaded succesfully: the following have been modified:\n{result}")
+    # else:
+    #     print(f"No config detected: {result}")
     active = True
     while active:
         active = handler.cycle_input(VERSION)
